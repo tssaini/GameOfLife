@@ -28,9 +28,30 @@ int getvalue(int **A, int xpos, int ypos, int n){
 	}
 
 	if (neighbours < 2) return 0;
-	if (neighbours == 2 || neighbours == 3 ) return A[xpos][ypos];
+	if ((neighbours == 2 || neighbours == 3) && A[xpos][ypos] == 1) 
+		return 1;
 	if (neighbours > 3) return 0;
 	if (neighbours == 3) return 1;
+}
+
+void displaygrid(int **A, int n){
+	int i, j;
+	for(i = 0; i < n+2; i++) 
+		printf("-");
+	printf("\n");
+	for( i = 0; i< n; i++){
+		printf("|");
+		for(j = 0; j< n; j++){
+			if(A[i][j] == 1) 
+				printf("x");
+			else 
+				printf(" ");
+		}
+		printf("|\n");
+	}
+	for(i = 0; i < n+2; i++)
+                printf("-");
+
 }
 
 void copyarray(int **A, int **B, int n){
@@ -49,10 +70,23 @@ void printarray(int **array, int n){
         }
 }
 
-int main(void){
+int main(int argc, char *argv[]){
         int **A, **B;
-	int N = 10;
+	FILE *fp;
+	int N;
 	int i, j;
+	
+	if( argc != 2){
+		fprintf(stderr,"%s: At least one arguement in required\n", argv[0]);
+		exit(1);
+	}
+
+	if( (fp = fopen(argv[1], "r")) == NULL){
+		fprintf(stderr, "%s: Error opening file %s\n", argv[0], argv[1]);
+		exit(1);
+	}
+	
+	fscanf(fp, "%d",&N);
 
        	A = malloc(N * sizeof(int *));
 	B = malloc(N * sizeof(int *));
@@ -61,24 +95,23 @@ int main(void){
 		B[i] = malloc(N * sizeof(int));
 	}
 
-	for (i=1;i<N;i++)
-      		for (j=1;j<N;j++)
-			A[i][i]=1;
+	for (i=0;i<N;i++)
+      		for (j=0;j<N;j++)
+			fscanf(fp, "%d", &A[i][j]);
+
+	fclose(fp);
+
 	char c = ' ';
 	while(c != 'q'){
 		system("clear");
-       		printarray(A, N);
+       		displaygrid(A, N);
 
 		for (i=0;i<N;i++)
                 	for (j=0;j<N;j++)
                         	B[i][j]= getvalue(A, i, j, N);
-		//printf("\n");
-		//printarray(B, N);
-
 		copyarray(A,B, N);
 		c = getchar();
 	}
-	printf("A[%d][%d] will be %d\n",N-1,N-1,getvalue(A,N-1,N-1,N));
 	
 	return 0;
 }
