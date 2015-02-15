@@ -61,14 +61,6 @@ void copyarray(int **A, int **B, int n){
                         A[i][j]=B[i][j];
 }
 
-void printarray(int **array, int n){
-	int i, j;
-	for (i = 0; i < n; i++) {
-                for (j = 0; j < n; j++)
-                        printf("%d ", array[i][j]);
-                printf("\n");
-        }
-}
 
 int main(int argc, char *argv[]){
         int **A, **B;
